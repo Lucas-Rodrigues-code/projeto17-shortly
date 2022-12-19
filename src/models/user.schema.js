@@ -8,6 +8,6 @@ export const userSchema = joi.object({
 });
 
 export const userSchemaLogin = joi.object({
-  email: joi.string().email().required().min(3),
+  email: joi.string().email().required(),
   password: joi.string().required().min(3),
 });

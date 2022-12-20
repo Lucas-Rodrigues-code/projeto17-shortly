@@ -20,7 +20,7 @@ export async function signIn(req, res) {
     const user = res.locals.user;
 
     const token = uuid();
-
+    
     try {
         await connection.query("UPDATE users SET token=$1 WHERE id=$2;", [token, user.id]);
         res.status(200).send({ message: "você se conectou.", token: token });

@@ -2,7 +2,7 @@ import { userSchema, userSchemaLogin } from "../models/user.schema.js";
 import connection from '../database/db.js';
 import bcrypt from "bcrypt";
 
-export async function userValidation(req, res, next) {
+export  async function userValidation(req, res, next) {
     const user = req.body;
     const { error } = userSchema.validate(req.body, { abortEarly: false });
     if (error) {
@@ -16,7 +16,6 @@ export async function userValidation(req, res, next) {
             res.status(409).send({ message: "Email já está em uso." });
             return;
         }
-
     } catch (err) {
         res.sendStatus(500)
     }
@@ -35,17 +34,18 @@ export async function signInBodyValidation(req, res, next) {
     }
 
     try {
-        const user = await connection.query("SELECT * FROM users WHERE email=$1;", [email]);
-        if (user.rowCount <= 0) {
+        const userExist = await connection.query("SELECT * FROM users WHERE email=$1;", [email]);
+        
+        if (userExist.rowCount <= 0) {
             res.status(401).send({ message: "email incorreto" });
             return;
         }
-        const passwordOk = bcrypt.compareSync(password, user.rows[0].password);
+        const passwordOk = bcrypt.compareSync(password, userExist.rows[0].password);
         if (!passwordOk) {
             res.status(401).send({ message: "Senha incorreta" });
             return;
         }
-
+        const user = userExist.rows[0];
         res.locals.user = user;
         next();
     } catch (err) {

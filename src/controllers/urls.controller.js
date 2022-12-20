@@ -34,3 +34,23 @@ export async function getUrlById(req, res) {
     res.sendStatus(500);
   }
 }
+
+
+export async function getShortUrl(req, res) {
+  const { shortUrl } = req.params;
+
+  try {
+    const urlShort = (await connection.query(`SELECT * FROM urls WHERE "shortUrl"=$1;`, [shortUrl])).rows[0]
+
+    if (!urlShort) {
+      res.status(404).send({ message: "Essa shortUrl não existe." });
+      return;
+    }
+    await connection.query(`UPDATE urls SET visits=$1 WHERE "shortUrl"=$2;`, [Number(urlShort.visits) + 1,
+    urlShort.shortUrl]);
+    res.redirect(urlShort.url);
+    return;
+  } catch (err) {
+    res.sendStatus(500);
+  }
+}

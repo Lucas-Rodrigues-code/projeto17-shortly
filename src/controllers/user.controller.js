@@ -26,6 +26,9 @@ export async function signIn(req, res) {
         res.status(200).send({ message: "você se conectou.", token: token });
         return;
     } catch (err) {
+        console.log(err)
         res.sendStatus(500);
     }
 }
+
+

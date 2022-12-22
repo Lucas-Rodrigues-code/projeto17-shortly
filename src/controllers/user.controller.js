@@ -32,8 +32,8 @@ export async function signIn(req, res) {
 }
 
 export async function getUserMe(req, res) {
-    const  user  = res.locals.user
-    
+    const user = res.locals.user
+
 
     try {
         const sum_visits = (await connection.query(
@@ -58,3 +58,22 @@ export async function getUserMe(req, res) {
     }
 }
 
+export async function getUsersRanking(req, res) {
+    try {
+        const ranking10 = await connection.query(
+        `SELECT users.id, users.name, SUM(urls.visits) AS "visitCount", COUNT(urls.id) AS "linksCount"
+        FROM urls
+        LEFT JOIN users
+        ON users.id=urls.user_id
+        GROUP BY users.id
+        ORDER BY "visitCount" DESC, id ASC
+        LIMIT 10;`
+        );
+
+        res.status(200).send(ranking10.rows);
+        return;
+    } catch (err) {
+
+        res.sendStatus(500);
+    }
+}

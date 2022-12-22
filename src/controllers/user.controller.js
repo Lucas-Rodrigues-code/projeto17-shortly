@@ -73,7 +73,7 @@ export async function getUsersRanking(req, res) {
         res.status(200).send(ranking10.rows);
         return;
     } catch (err) {
-
+        console.log(err)
         res.sendStatus(500);
     }
 }

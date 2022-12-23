@@ -74,6 +74,6 @@ export async function getUsersRanking(req, res) {
         return;
     } catch (err) {
         console.log(err)
-        res.sendStatus(500);
+        res.status(500).send({error :err});
     }
 }
